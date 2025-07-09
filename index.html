@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能养牛管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4a6f3d;
+            --secondary: #8d9f87;
+            --accent: #e6b325;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* 登录页面样式 */
+        .login-page {
+            background: linear-gradient(135deg, #f0f2f5, #e4e9f0);
+            color: var(--dark);
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: opacity 0.5s ease;
+        }
+        
+        .cow-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.05;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M50,25 C65,20 80,25 90,35 C100,45 105,60 100,75 C95,90 85,100 70,105 C55,110 40,105 30,95 C20,85 15,70 20,55 C25,40 35,30 50,25 Z' fill='%234a6f3d'/%3E%3C/svg%3E");
+            background-size: 200px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-header {
+            background: var(--primary);
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .login-logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+        }
+        
+        .welcome-text {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .login-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: #f9fbfa;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 111, 61, 0.15);
+            outline: none;
+            background-color: white;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 3px;
+            top: 48px;
+            color: var(--gray);
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+        
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .remember input {
+            accent-color: var(--primary);
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .forgot-password:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(74, 111, 61, 0.2);
+        }
+        
+        .btn-login:hover {
+            background: #3a5a30;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(74, 111, 61, 0.3);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .login-footer {
+            text-align: center;
+            padding: 20px 0 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .login-footer a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .cow-decoration {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            height: 200px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M50,25 C65,20 80,25 90,35 C100,45 105,60 100,75 C95,90 85,100 70,105 C55,110 40,105 30,95 C20,85 15,70 20,55 C25,40 35,30 50,25 Z' fill='%234a6f3d' opacity='0.1'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: bottom right;
+            z-index: -1;
+        }
+        
+        /* 主系统样式 */
+        .main-system {
+            display: none;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            transition: opacity 0.5s ease;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding: 20px 0;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+        
+        .logo-container {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0 15px;
+        }
+        
+        .nav-links li {
+            margin-bottom: 5px;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+            gap: 10px;
+        }
+        
+        .nav-links a:hover, 
+        .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .nav-links a i {
+            width: 25px;
+            text-align: center;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .page-title h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+            outline: none;
+            width: 250px;
+            transition: var(--transition);
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 111, 61, 0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* 卡片样式 */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .icon-feed {
+            background-color: rgba(232, 179, 37, 0.2);
+            color: var(--accent);
+        }
+        
+        .icon-water {
+            background-color: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+        }
+        
+        .icon-health {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .icon-stats {
+            background-color: rgba(156, 39, 176, 0.2);
+            color: #9c27b0;
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--primary);
+        }
+        
+        .card-info {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* 图表区域 */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            background-color: #e2e6ea;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a5a30;
+        }
+        
+        .chart-canvas {
+            height: 300px;
+            position: relative;
+        }
+        
+        /* 表格区域 */
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            color: var(--gray);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-fed {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .action-btn:hover {
+            background-color: #f0f2f5;
+        }
+        
+        /* 添加新记录表单 */
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 111, 61, 0.1);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar .logo-text,
+            .sidebar .nav-text {
+                display: none;
+            }
+            
+            .sidebar .logo {
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                justify-content: center;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .login-container {
+                max-width: 90%;
+            }
+            
+            .cow-decoration {
+                width: 200px;
+                height: 150px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box input {
+                width: 150px;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .user-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-box {
+                flex: 1;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .cow-decoration {
+                width: 150px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-page" id="loginPage">
+        <div class="cow-pattern"></div>
+        <div class="cow-decoration"></div>
+        
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-cow"></i>
+                    <span>智能养牛系统</span>
+                </div>
+                <h1>牧场管理系统登录</h1>
+                <p class="welcome-text">欢迎回来，请登录您的账户</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">
+                        <i class="fas fa-user"></i> 用户名
+                    </label>
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" class="form-control" id="username" placeholder="请输入用户名" required>
+                    <div class="error-message" id="username-error">请输入有效的用户名</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i> 密码
+                    </label>
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" class="form-control" id="password" placeholder="请输入密码" required>
+                    <div class="error-message" id="password-error">密码长度至少为6个字符</div>
+                </div>
+                
+                <div class="remember-forgot">
+                    <div class="remember">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">记住我</label>
+                    </div>
+                    <a href="#" class="forgot-password">忘记密码?</a>
+                </div>
+                
+                <button class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> 登录系统
+                </button>
+            </div>
+            
+            <div class="login-footer">
+                <p>© 2023 智能养牛管理系统 | <a href="#">联系我们</a> | <a href="#">隐私政策</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主系统界面 -->
+    <div class="main-system" id="mainSystem">
+        <!-- 侧边导航栏 -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-cow"></i>
+                    <span class="logo-text">智能养牛系统</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active"><i class="fas fa-home"></i><span class="nav-text">总览</span></a></li>
+                <li><a href="#"><i class="fas fa-cow"></i><span class="nav-text">牛只管理</span></a></li>
+                <li><a href="#"><i class="fas fa-utensils"></i><span class="nav-text">投喂管理</span></a></li>
+                <li><a href="#"><i class="fas fa-tint"></i><span class="nav-text">喂水管理</span></a></li>
+                <li><a href="#"><i class="fas fa-heartbeat"></i><span class="nav-text">健康管理</span></a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i><span class="nav-text">统计分析</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i><span class="nav-text">系统设置</span></a></li>
+                <li>
+                    <a href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="nav-text">退出登录</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部标题栏 -->
+            <div class="header">
+                <div class="page-title">
+                    <h1><i class="fas fa-utensils"></i> 养牛投喂与喂水管理系统</h1>
+                </div>
+                <div class="user-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="搜索牛只或记录...">
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar">牧</div>
+                        <span class="user-name">牧场管理员</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据卡片 -->
+            <div class="cards-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">今日投喂</h3>
+                        <div class="card-icon icon-feed">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">28 头</div>
+                    <div class="card-info">已完成今日计划的 93%</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">今日喂水</h3>
+                        <div class="card-icon icon-water">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">1,250 L</div>
+                    <div class="card-info">平均每头牛 44.6L</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">健康牛只</h3>
+                        <div class="card-icon icon-health">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">30 头</div>
+                    <div class="card-info">整体健康率 96.8%</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">饲料消耗</h3>
+                        <div class="card-icon icon-stats">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">850 kg</div>
+                    <div class="card-info">本月消耗 12,200 kg</div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">本周投喂统计</h3>
+                        <div class="chart-actions">
+                            <button class="btn"><i class="fas fa-download"></i> 导出</button>
+                            <button class="btn"><i class="fas fa-filter"></i> 筛选</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas">
+                        <canvas id="feedingChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">饲料类型占比</h3>
+                        <div class="chart-actions">
+                            <button class="btn"><i class="fas fa-sync-alt"></i> 刷新</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas">
+                        <canvas id="feedTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 投喂记录表格 -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>今日投喂记录</h3>
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> 添加记录</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>牛只编号</th>
+                            <th>饲料类型</th>
+                            <th>投喂量 (kg)</th>
+                            <th>时间</th>
+                            <th>负责人</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#C-2023-001</td>
+                            <td>青贮饲料</td>
+                            <td>25</td>
+                            <td>08:30 AM</td>
+                            <td>张明</td>
+                            <td><span class="status status-fed">已完成</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#C-2023-005</td>
+                            <td>精饲料</td>
+                            <td>18</td>
+                            <td>08:45 AM</td>
+                            <td>李华</td>
+                            <td><span class="status status-fed">已完成</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#C-2023-012</td>
+                            <td>混合饲料</td>
+                            <td>30</td>
+                            <td>09:15 AM</td>
+                            <td>王伟</td>
+                            <td><span class="status status-fed">已完成</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#C-2023-018</td>
+                            <td>青贮饲料</td>
+                            <td>22</td>
+                            <td>10:00 AM</td>
+                            <td>张明</td>
+                            <td><span class="status status-fed">已完成</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#C-2023-025</td>
+                            <td>干草</td>
+                            <td>15</td>
+                            <td>10:30 AM</td>
+                            <td>赵芳</td>
+                            <td><span class="status status-pending">进行中</span></td>
+                            <td>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 添加记录表单 -->
+            <div class="form-container">
+                <h2 class="form-title"><i class="fas fa-plus-circle"></i> 添加投喂记录</h2>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="cattleId">牛只编号</label>
+                            <select class="form-control" id="cattleId" required>
+                                <option value="">请选择牛只</option>
+                                <option value="001">#C-2023-001</option>
+                                <option value="005">#C-2023-005</option>
+                                <option value="012">#C-2023-012</option>
+                                <option value="018">#C-2023-018</option>
+                                <option value="025">#C-2023-025</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="feedType">饲料类型</label>
+                            <select class="form-control" id="feedType" required>
+                                <option value="">选择饲料类型</option>
+                                <option value="silage">青贮饲料</option>
+                                <option value="concentrate">精饲料</option>
+                                <option value="mixed">混合饲料</option>
+                                <option value="hay">干草</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="feedAmount">投喂量 (kg)</label>
+                            <input type="number" class="form-control" id="feedAmount" min="1" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="feedTime">投喂时间</label>
+                            <input type="datetime-local" class="form-control" id="feedTime" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="notes">备注</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="添加额外说明..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn">取消</button>
+                        <button type="submit" class="btn btn-primary">保存记录</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginPage = document.getElementById('loginPage');
+            const mainSystem = document.getElementById('mainSystem');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('username-error');
+            const passwordError = document.getElementById('password-error');
+            
+            // 检查是否已登录
+            function checkLogin() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+                if (isLoggedIn) {
+                    loginPage.style.display = 'none';
+                    mainSystem.style.display = 'block';
+                    initCharts();
+                } else {
+                    loginPage.style.display = 'flex';
+                    mainSystem.style.display = 'none';
+                }
+            }
+            
+            // 初始化图表
+            function initCharts() {
+                // 投喂统计图表
+                const feedingCtx = document.getElementById('feedingChart').getContext('2d');
+                const feedingChart = new Chart(feedingCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                        datasets: [{
+                            label: '饲料消耗 (kg)',
+                            data: [820, 795, 850, 880, 830, 800, 780],
+                            backgroundColor: 'rgba(74, 111, 61, 0.7)',
+                            borderColor: 'rgba(74, 111, 61, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: '喂水量 (L)',
+                            data: [1150, 1200, 1250, 1300, 1220, 1180, 1150],
+                            backgroundColor: 'rgba(33, 150, 243, 0.7)',
+                            borderColor: 'rgba(33, 150, 243, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // 饲料类型图表
+                const feedTypeCtx = document.getElementById('feedTypeChart').getContext('2d');
+                const feedTypeChart = new Chart(feedTypeCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['青贮饲料', '精饲料', '混合饲料', '干草', '其他'],
+                        datasets: [{
+                            data: [45, 25, 15, 10, 5],
+                            backgroundColor: [
+                                'rgba(74, 111, 61, 0.8)',
+                                'rgba(232, 179, 37, 0.8)',
+                                'rgba(33, 150, 243, 0.8)',
+                                'rgba(156, 39, 176, 0.8)',
+                                'rgba(108, 117, 125, 0.8)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            }
+                        }
+                    }
+                });
+                
+                // 表单提交处理
+                document.querySelector('form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('投喂记录已成功保存！');
+                    this.reset();
+                });
+            }
+            
+            // 表单验证函数
+            function validateForm() {
+                let isValid = true;
+                
+                // 验证用户名
+                if (usernameInput.value.trim() === '') {
+                    usernameError.style.display = 'block';
+                    usernameInput.style.borderColor = 'var(--danger)';
+                    isValid = false;
+                } else {
+                    usernameError.style.display = 'none';
+                    usernameInput.style.borderColor = '#ddd';
+                }
+                
+                // 验证密码
+                if (passwordInput.value.length < 6) {
+                    passwordError.style.display = 'block';
+                    passwordInput.style.borderColor = 'var(--danger)';
+                    isValid = false;
+                } else {
+                    passwordError.style.display = 'none';
+                    passwordInput.style.borderColor = '#ddd';
+                }
+                
+                return isValid;
+            }
+            
+            // 登录按钮点击事件
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // 模拟登录成功
+                    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
+                    loginBtn.disabled = true;
+                    
+                    // 模拟网络请求
+                    setTimeout(function() {
+                        // 保存登录状态
+                        localStorage.setItem('isLoggedIn', 'true');
+                        
+                        // 隐藏登录页面，显示主系统
+                        loginPage.style.display = 'none';
+                        mainSystem.style.display = 'block';
+                        
+                        // 初始化图表
+                        initCharts();
+                        
+                        // 重置按钮状态
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 登录系统';
+                        loginBtn.disabled = false;
+                    }, 1500);
+                }
+            });
+            
+            // 退出登录
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('isLoggedIn');
+                loginPage.style.display = 'flex';
+                mainSystem.style.display = 'none';
+                usernameInput.value = '';
+                passwordInput.value = '';
+            });
+            
+            // 输入框实时验证
+            usernameInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    usernameError.style.display = 'none';
+                    this.style.borderColor = '#ddd';
+                }
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                if (this.value.length >= 6) {
+                    passwordError.style.display = 'none';
+                    this.style.borderColor = '#ddd';
+                }
+            });
+            
+            // 初始检查登录状态
+            checkLogin();
+        });
+    </script>
+</body>
+</html>
